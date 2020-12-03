@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# you will want to customize this to use different word lists
+# only designed to crack WPA secrets
+
 OUTPUT_DIR_BASE="$1"
 
 if [[ "$OUTPUT_DIR_BASE" == "" ]]; then
@@ -12,5 +15,5 @@ if [[ ! -d "$OUTPUT_DIR_BASE" ]]; then
 fi
 
 for file in $OUTPUT_DIR_BASE/*/*.hccapx; do
-    echo "$file"
+    hashcat -m 22000 "$file" ../word_lists/Top204Thousand-WPA-probable-v2.txt
 done
