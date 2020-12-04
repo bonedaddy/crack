@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# used to do bulk conversion of pcap files into hccapx for use with hashcat
+# additionally it stores a copy of all successfully converted hccapx files in a single file
+# to do bulk cracking at once
+
 # used to do bulk parsing of pcap files checking for crackable materials
 # works best if pcap files are named in the format SSID_MAC 
 
@@ -15,6 +19,9 @@ fi
 if [[ ! -d "$OUTPUT_DIR_BASE" ]]; then
     mkdir "$OUTPUT_DIR_BASE"
 fi
+
+# combined hccapx file
+COMBINED_HCCAPX="$OUTPUT_DIR_BASE/combined.hccapx"
 
 # parse over all pcap files
 for file in $PCAP_DIR/*.pcap; do
@@ -41,3 +48,17 @@ for file in $PCAP_DIR/*.pcap; do
     fi
 
 done
+
+# remove previous combined hccapx file
+rm "$COMBINED_HCCAPX"
+
+# parse over all hccapx files
+for file in $OUTPUT_DIR_BASE/*/*.hccapx; do
+    cat "$file" >> "$COMBINED_HCCAPX"
+done
+
+mv "$COMBINED_HCCAPX" "$COMBINED_HCCAPX.temp"
+
+sort -u "$COMBINED_HCCAPX.temp" -o "$COMBINED_HCCAPX"
+
+rm "$COMBINED_HCCAPX.temp"
