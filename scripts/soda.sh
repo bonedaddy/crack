@@ -14,6 +14,7 @@ OUTPUT_DIR_BASE=""
 WORD_LIST=""
 HASH=""
 PURPLE_RAIN="" # https://www.netmux.com/blog/purple-rain-attack
+PURPLE_RAIN_LIGHT="" # a light version
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -38,6 +39,11 @@ while [[ $# -gt 0 ]]; do
             shift 
             shift
             ;;
+        --purple-rain-light)
+            PURPLE_RAIN_LIGHT="$2"
+            shift 
+            shift
+            ;;
         *)    # unknown option
             POSITIONAL+=("$1") # save it in an array for later
             shift # past argument
@@ -55,7 +61,7 @@ if [[ ! -d "$OUTPUT_DIR_BASE" ]]; then
     exit 1
 fi
 
-if [[ "$WORLD_LIST" == "" ]]; then
+if [[ "$WORD_LIST" == "" ]]; then
     WORD_LIST="../word_lists/Top204Thousand-WPA-probable-v2.txt"
 fi
 
@@ -67,6 +73,11 @@ for file in $OUTPUT_DIR_BASE/*/*.hccapx; do
     # use purple rain attack that collects successful random rules
     if [[ "$PURPLE_RAIN" == "true" ]]; then
         shuf "$WORD_LIST" | pp64.bin --pw-min=8 | hashcat --debug-mode=1 --debug-file=success_purplerain.rule -a 0 -m "$HASH" "$file" -g 300000
+        continue
+    fi
+    # use lightweight purple rain
+    if [[ "$PURPLE_RAIN_LIGHT" == "true" ]]; then
+        shuf "$WORD_LIST" | pp64.bin --pw-min=8 | hashcat --debug-mode=1 --debug-file=success_purplerain.rule -a 0 -m "$HASH" "$file" -g 2
         continue
     fi
     # default crack command
