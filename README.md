@@ -1,9 +1,8 @@
 # crack
 
-hashcracking tools, mostly for wpa stuff
+Hashcracking toolkit, including documentation, installation scripts, and utility scripts.
 
-
-# usage
+# usage wifi cracking
 
 ## brief
 
