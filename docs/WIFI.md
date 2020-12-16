@@ -33,7 +33,7 @@ First start listening for broadcasting access points ot locate the BSSID you wan
 
 Second place target BSSID into a fil, and start hcxdumptool to capture the PKMID
 
-* `hcxdump tool -i <interface> --filterlist=bssid_file.txt --filermode=2 --enable_status=2 -o pmkid.pcap`
+* `hcxdumptool -i <interface> --filterlist_ap=bssid_file.txt --filtermode=2 --enable_status=2 -o pmkid.pcap`
 
 Third with the BSSID PKMID captured, extract into hashcat format for cracking
 
