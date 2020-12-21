@@ -42,3 +42,11 @@ Third with the BSSID PKMID captured, extract into hashcat format for cracking
 Fourth start flicking your wrists
 
 * `hashcat -a 0 -m 16800 -w 4 wpa2_pmkid_hash.txt dict.txt`
+
+# Filtration
+
+You can run the following against hccapx files to get a list of associated ESSIDs:
+
+```shell
+$>  hcxhashtool -i combined.hccapx -E combined.hccapx.essid_list -o combined.hccapx2
+```

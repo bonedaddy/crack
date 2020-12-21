@@ -12,7 +12,8 @@ Hashcracking toolkit, including documentation, installation scripts, and utility
 
 ## detailed
 
-After acquiring pcap files the `baking.sh` script reads pcap files from `/path/to/pcaps`. It then uses `/path/to/main_output_dir` as the base directory for storing converted hccapx files. Each pcap file gets it's own directory within `/path/to/main_output_dir`. Inside of this the pcap files along with their converted hccapx file are stored.
+
+The `baking.sh` script is used to processed captured data and extract all possible key material. It can handle data captured from deauth attacks as well as association attacks.  It parses the captured data, and attempts to extract identity (username and password) information. In addition it uses all captured data to generate dynamic word lists, using the `OneRuleToRuleThemAll` hashcat rule. 
 
 After conversion the `soda.sh` script reads all hccapx files, and attemps to crack them using `hashcat`. A default wordlist is provided in `word_lists` downloaded from [here](https://github.com/SnollyG0st3r/Probable-Wordlists/tree/master/Real-Passwords/WPA-Length). The soda script is pretty basic right now and is only intended to be used as a template until it is more customizable
 
