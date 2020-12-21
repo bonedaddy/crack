@@ -33,7 +33,16 @@ for file in $PCAP_DIR/*.pcap; do
     cp "$file" "$STORE_DIR"
     
     # capture all crackable key materials not just the best
-    hcxpcapngtool --all -o "$STORE_DIR/capture.hccapx" "$STORE_DIR/$JUST_NAME"
+    hcxpcapngtool \
+        -o "$STORE_DIR/capture.hccapx" \
+        -E "$STORE_DIR/capture.hccapx.essid_list" \
+        -R "$STORE_DIR/capture.hccapx.proberequests" \
+        -I "$STORE_DIR/capture.hccapx.identitylist" \
+        -U "$STORE_DIR/capture.hccapx.usernamelist" \
+        --eapmd5="$STORE_DIR/capture.hccapx.eapmd5" \
+        --tacacs-plus="$STORE_DIR/capture.hccapx.tacacs_plus" \
+        --eapleap="$STORE_DIR/capture.eap_leap" \
+        "$STORE_DIR/$JUST_NAME"
     
     # if the above fails we weren't able to capture any crackable materials 
     # however cap2hccapx might work, so try that as a fallback
@@ -47,10 +56,31 @@ for file in $PCAP_DIR/*.pcap; do
         fi
     fi
 
+    # now prepare captured data tto generate a dynamic wordlist based off the captured data
+    hcxeiutool \
+        -i "$STORE_DIR/capture.hccapx.essid_list" \
+        -d "$STORE_DIR/capture.hccapx.digit_list" \
+        -x "$STORE_DIR/capture.hccapx.xdigit_list" \
+        -c "$STORE_DIR/capture.hccapx.char_list" \
+        -s "$STORE_DIR/capture.hccapx.sc_list"
+
+    cat "$STORE_DIR/capture.hccapx.essid_list" "$STORE_DIR/capture.hccapx.xdigit_list" "$STORE_DIR/capture.hccapx.char_list" "$STORE_DIR/capture.hccapx.digit_list" "$STORE_DIR/capture.hccapx.sc_list" > "$STORE_DIR/capture.hccapx.word_listtmp"
+
+    # run leetspeek and best64 rules against patricular charlist and sclist
+    hashcat --stdout -r  ../rules/OneRuleToRuleThemAll.rule "$STORE_DIR/capture.hccapx.char_list" >> "$STORE_DIR/capture.hccapx.word_listtmp"
+    hashcat --stdout -r ../rules/OneRuleToRuleThemAll.rule "$STORE_DIR/capture.hccapx.sc_list" >> "$STORE_DIR/capture.hccapx.word_listtmp"
+
+    # sort the words, remove duplicates, shuffle output 
+    cat "$STORE_DIR/capture.hccapx.word_listtmp" | sort | uniq | shuf > "$STORE_DIR/capture.hccapx.word_list"
+
+    # remove extraneous files
+    rm "$STORE_DIR/capture.hccapx.xdigit_list" "$STORE_DIR/capture.hccapx.char_list" "$STORE_DIR/capture.hccapx.sc_list" "$STORE_DIR/capture.hccapx.word_listtmp" "$STORE_DIR/capture.hccapx.digit_list"
+
 done
 
 # remove previous combined hccapx file
-rm "$COMBINED_HCCAPX"
+
+rm "$COMBINED_HCCAPX" > /dev/null
 
 # parse over all hccapx files
 for file in $OUTPUT_DIR_BASE/*/*.hccapx; do
