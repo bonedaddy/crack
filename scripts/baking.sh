@@ -36,9 +36,9 @@ for file in $PCAP_DIR/*.pcap; do
     hcxpcapngtool \
         -o "$STORE_DIR/capture.hccapx" \
         -E "$STORE_DIR/capture.hccapx.essid_list" \
-        -R "$STORE_DIR/capture.hccapx.proberequests" \
-        -I "$STORE_DIR/capture.hccapx.identitylist" \
-        -U "$STORE_DIR/capture.hccapx.usernamelist" \
+        -R "$STORE_DIR/capture.hccapx.probe_requests" \
+        -I "$STORE_DIR/capture.hccapx.identity_list" \
+        -U "$STORE_DIR/capture.hccapx.username_list" \
         --eapmd5="$STORE_DIR/capture.hccapx.eapmd5" \
         --tacacs-plus="$STORE_DIR/capture.hccapx.tacacs_plus" \
         --eapleap="$STORE_DIR/capture.eap_leap" \
@@ -77,10 +77,6 @@ for file in $PCAP_DIR/*.pcap; do
     rm "$STORE_DIR/capture.hccapx.xdigit_list" "$STORE_DIR/capture.hccapx.char_list" "$STORE_DIR/capture.hccapx.sc_list" "$STORE_DIR/capture.hccapx.word_listtmp" "$STORE_DIR/capture.hccapx.digit_list"
 
 done
-
-# remove previous combined hccapx file
-
-rm "$COMBINED_HCCAPX" > /dev/null
 
 # parse over all hccapx files
 for file in $OUTPUT_DIR_BASE/*/*.hccapx; do
