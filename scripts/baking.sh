@@ -66,15 +66,15 @@ for file in $PCAP_DIR/*.pcap; do
 
     cat "$STORE_DIR/capture.hccapx.essid_list" "$STORE_DIR/capture.hccapx.xdigit_list" "$STORE_DIR/capture.hccapx.char_list" "$STORE_DIR/capture.hccapx.digit_list" "$STORE_DIR/capture.hccapx.sc_list" > "$STORE_DIR/capture.hccapx.word_listtmp"
 
-    # run leetspeek and best64 rules against patricular charlist and sclist
-    hashcat --stdout -r  ../rules/OneRuleToRuleThemAll.rule "$STORE_DIR/capture.hccapx.char_list" >> "$STORE_DIR/capture.hccapx.word_listtmp"
-    hashcat --stdout -r ../rules/OneRuleToRuleThemAll.rule "$STORE_DIR/capture.hccapx.sc_list" >> "$STORE_DIR/capture.hccapx.word_listtmp"
+    # run OneRuleToRuleThemAll against the word list
+    hashcat --stdout -r  ../rules/OneRuleToRuleThemAll.rule "$STORE_DIR/capture.hccapx.word_listtmp" >> "$STORE_DIR/capture.hccapx.word_listtmp2"
 
-    # sort the words, remove duplicates, shuffle output 
-    cat "$STORE_DIR/capture.hccapx.word_listtmp" | sort | uniq | shuf > "$STORE_DIR/capture.hccapx.word_list"
+    # remove lines shorter than 8 characters, the minimum requried for WPA
+    # followed by sorting and removing duplciates
+    awk -v n=8 '{ line = $0; gsub("[^[:graph:]]", "") } length >= n { print line }' "$STORE_DIR/capture.hccapx.word_listtmp2" | sort | uniq > "$STORE_DIR/capture.hccapx.word_list"
 
     # remove extraneous files
-    rm "$STORE_DIR/capture.hccapx.xdigit_list" "$STORE_DIR/capture.hccapx.char_list" "$STORE_DIR/capture.hccapx.sc_list" "$STORE_DIR/capture.hccapx.word_listtmp" "$STORE_DIR/capture.hccapx.digit_list"
+    rm "$STORE_DIR/capture.hccapx.xdigit_list" "$STORE_DIR/capture.hccapx.char_list" "$STORE_DIR/capture.hccapx.sc_list" "$STORE_DIR/capture.hccapx.word_listtmp" "$STORE_DIR/capture.hccapx.digit_list" "$STORE_DIR/capture.hccapx.word_listtmp2"
 
 done
 
