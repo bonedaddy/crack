@@ -2,7 +2,11 @@
 
 Hashcracking toolkit, including documentation, installation scripts, and utility scripts.
 
-# usage wifi cracking
+# usage (wifi cracking)
+
+# acquiring packet captures for crackable key material
+
+Within `caplets` there is a bettercap caplet named `bigdaddy.cap`. It starts wifi recon and anytime a new wifi access point is discovered, we attempt to associate with it, while anytime a new client station is discovered we attempt to deauthenticate it. This allows us to capture as much possible key material. Additionally every 15 seconds we attempt to deauthenticate all current access points. WiFi channels are hopped every 125ms, or every 250ms if both 2.4ghz and 5ghz bands are available.
 
 ## brief
 
