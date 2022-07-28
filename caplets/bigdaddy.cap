@@ -28,8 +28,9 @@ set wifi.deauth.skip <bssid-comma-separated-list>
 set wifi.assoc.skip <bssid-comma-separated-list>
 # hop channels every 125ms (250ms if 2.4g and 5g bands are available)
 set wifi.hop.period 125
-# set default client station inactivity period to 60 seconds default is 300
+# set default client and ap station inactivity period to 60 seconds default is 300
 set wifi.sta.ttl 60
+set wifi.ap.ttl 60
 # configure a ticker command to auto deauth every so often
 # every 15 seconds deauth every client from every ap
 set ticker.period 15
